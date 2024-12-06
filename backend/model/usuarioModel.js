@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
 })
 
 //Actualización automatica de updated_at
-encuestaSchema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
     this.updated_at = Date.now()
     next()
 })

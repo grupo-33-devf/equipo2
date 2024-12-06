@@ -1,14 +1,12 @@
 const express = require('express')
 const router = express.Router()
-
-/*
-const { 
-    register, 
-    login, 
-    oauth, 
-    logout 
+const {
+    register,
+    login,
+    oauth,
+    logout
 } = require('../controllers/usuariosControllers')
-*/
+
 
 router.post('/register', register) // Función para registrar usuario 
 
