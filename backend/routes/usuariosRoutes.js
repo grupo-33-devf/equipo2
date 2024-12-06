@@ -7,7 +7,6 @@ const {
     logout
 } = require('../controllers/usuariosControllers')
 
-
 router.post('/register', register) // Función para registrar usuario 
 
 router.post('/login', login) // Función para inciar sesión

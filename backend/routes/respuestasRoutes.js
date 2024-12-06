@@ -1,12 +1,9 @@
 const express = require('express')
 const router = express.Router()
-
-/*
-const { 
-    responder, 
-    obtenerRespuestas 
+const {
+    responder,
+    obtenerRespuestas
 } = require('../controllers/respuestasControllers')
-*/
 
 // Funcion para responder una pregunta
 router.post('/', responder)

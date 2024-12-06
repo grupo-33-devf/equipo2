@@ -1,6 +1,6 @@
 const Encuesta = require('../model/encuestaModel')
 const Pregunta = require('../model/preguntaModel')
-const Respuest = require('../model/respuestaModel')
+const Respuesta = require('../model/respuestaModel')
 const QRCode = require('qrcode')
 const TinyURL = require('tinyurl')
 
@@ -118,7 +118,36 @@ const generarQr = async (req, res) => {
 }
 
 // Pendiente hasta terminar preguntas y respuestas controllers
-const verResultados = async (req, res) => { }
+const verResultados = async (req, res) => {
+    const { id } = req.params
+
+    try {
+
+        const respuestas = await Respuesta.find({ encuesta_id: id }).populate('pregunta_id')
+
+        if (!respuestas.length) {
+            return res.status(404).json({ message: 'No se encontraron respuestas para esta encuesta' })
+        }
+
+        const resultados = respuestas.reduce((acc, respuesta) => {
+            const pregunta = respuesta.pregunta_id.texto
+
+            if (!acc[pregunta]) {
+                acc[pregunta] = []
+            }
+
+            acc[pregunta].push(respuesta.respuesta)
+
+            return acc
+        }, {})
+
+        res.status(200).json(resultados)
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los resultados', error: error.message })
+    }
+
+}
 
 module.exports = {
     obtenerEncuestas,

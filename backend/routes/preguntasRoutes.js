@@ -1,13 +1,10 @@
 const express = require('express')
 const router = express.Router()
-
-/*
-const { 
-    crearPregunta, 
-    modificarPregunta, 
-    borrarPregunta 
+const {
+    crearPregunta,
+    modificarPregunta,
+    borrarPregunta
 } = require('../controllers/preguntasControllers')
-*/
 
 // Función para crear una pregunta
 router.post('/', crearPregunta)

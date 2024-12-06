@@ -1,12 +1,9 @@
 const express = require('express')
 const router = express.Router()
-
-/*
-const { 
-    generarUrlCorta, 
-    generarQrCode 
+const {
+    generarUrlCorta,
+    generarQrCode
 } = require('../controllers/urlsControllers')
-*/
 
 // Función para generar una url acortada
 router.get('/:encuestaId/short_url', generarUrlCorta)
