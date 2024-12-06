@@ -34,7 +34,7 @@ const encuestaSchema = new mongoose.Schema({
     },
     url: {
         type: String,
-        required: [true, 'Por favor teclea una URL'],
+        required: false,
         validate: {
             validator: function (url) {
                 return /^https?:\/\/[^\s]+/.test(url);
