@@ -12,13 +12,13 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-/*
+
 app.use('/api/users', require('./routes/usuariosRoutes'))
 app.use('/api/encuestas', require('./routes/encuestasRoutes'))
-app.use('/api/preguntas', require('./routes/preguntasRoutes'))
-app.use('/api/respuestas', require('./routes/respuestasRoutes'))
-app.use('/api/urls', require('./routes/urlsRoutes'))
-*/
+//app.use('/api/preguntas', require('./routes/preguntasRoutes'))
+//app.use('/api/respuestas', require('./routes/respuestasRoutes'))
+//app.use('/api/urls', require('./routes/urlsRoutes'))
+
 
 app.use(errorHandler)
 
