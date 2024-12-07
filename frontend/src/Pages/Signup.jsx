@@ -4,7 +4,6 @@ import '@/styles/form.css'
 import logo from '@/assets/react.svg'
 
 const Signup = () => {
-    const apiUrl = import.meta.env.VITE_API_URL
 
     const [formData, setFormData] = useState({
         nombre: '',
@@ -23,7 +22,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const apiUrl = import.meta.env.VITE_API_URL;
+            const apiUrl = import.meta.env.VITE_API_URL
 
             const response = await axios.post(`${apiUrl}/api/users/register`, formData);
 
