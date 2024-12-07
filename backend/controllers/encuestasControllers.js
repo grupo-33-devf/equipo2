@@ -148,6 +148,19 @@ const verResultados = async (req, res) => {
 
 }
 
+const misEncuestas = async (req, res) => {
+
+    try {
+        const encuestas = await Encuesta.find({ creador_id: req.user.id })
+
+        res.status(200).json(encuestas)
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error no se pudo obtener la encuesta', error: error.message })
+    }
+
+}
+
 module.exports = {
     obtenerEncuestas,
     publicarEncuesta,
@@ -155,5 +168,6 @@ module.exports = {
     modificarEncuesta,
     borrarEncuesta,
     generarQr,
-    verResultados
+    verResultados,
+    misEncuestas
 }

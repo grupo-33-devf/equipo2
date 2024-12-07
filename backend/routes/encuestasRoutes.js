@@ -8,9 +8,11 @@ const {
     modificarEncuesta,
     borrarEncuesta,
     generarQr,
-    verResultados
+    verResultados,
+    misEncuestas
 } = require('../controllers/encuestasControllers')
 
+router.get('/misencuestas', protect, misEncuestas) //Función para obtener las encuestas que el usuario hizo log in 
 
 router
     .route('/')
