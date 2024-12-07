@@ -9,7 +9,7 @@ const preguntaSchema = new mongoose.Schema({
     },
     tipo: {
         type: String,
-        enum: ['opcion_unica', 'opcion_multiple', 'texto'],
+        enum: ['opcion_multiple', 'texto'],
         required: true
     },
     texto: {
@@ -17,7 +17,7 @@ const preguntaSchema = new mongoose.Schema({
         required: [true, 'Por favor teclea el texto de la pregunta']
     },
     opciones: {
-        type: [String], //Por el uso en opción mutiple o unica
+        type: [String], //Por el uso en opción mutiple
         default: [],
         validate: {
             validator: function (value) {
