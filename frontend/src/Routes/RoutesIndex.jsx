@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Encuestas from '@/Pages/Encuestas'
 import Home from '@/Pages/Home'
-import Login from '@/Pages/Loggin'
+import Login from '@/Pages/Login'
 import Signup from '@/Pages/Signup'
 import MisEncuestas from '@/Pages/MisEncuestas'
 
