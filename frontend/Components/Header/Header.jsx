@@ -14,27 +14,27 @@ const Header = () => {
             </a>
             <ul className="nav nav-pills">
                 <li className="nav-item">
-                    <a href="#" className="nav-link active" aria-current="page">
+                    <a href="/Home" className="nav-link active" aria-current="page">
                         Home
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href="#" className="nav-link">
+                    <a href="/Encuestas" className="nav-link">
                         Encuestas
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href="#" className="nav-link">
+                    <a href="/Mis encuestas" className="nav-link">
                         Mis encuestas
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href="#" className="nav-link">
-                        Loggin
+                    <a href="/Login" className="nav-link">
+                        Log in
                     </a>
                 </li>
                 <li className="nav-item">
-                    <a href="#" className="nav-link">
+                    <a href="/Singup" className="nav-link">
                         Singup
                     </a>
                 </li>

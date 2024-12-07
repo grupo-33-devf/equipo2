@@ -1,21 +1,15 @@
+import RoutesIndex from '../Routes/RoutesIndex'
 import './App.css'
-import Encuestas from '../Pages/Encuestas'
-import Home from '../Pages/Home'
-import Loggin from '../Pages/Loggin'
-import Signup from '../Pages/Signup'
-import MisEncuestas from '../Pages/MisEncuestas'
+import { BrowserRouter } from 'react-router-dom'
 
 function App() {
 
   return (
     <>
-      <h1>Encuestas</h1>
-      <Home />
-      <Encuestas />
-      <MisEncuestas />
-      <Loggin />
-      <Signup />
-
+      <BrowserRouter>
+        <h1>Encuestas</h1>
+        <RoutesIndex />
+      </BrowserRouter>
     </>
   )
 }
