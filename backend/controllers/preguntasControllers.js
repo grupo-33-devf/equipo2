@@ -85,14 +85,14 @@ const borrarPregunta = async (req, res) => {
     }
 }
 
-obtenerPreguntas = async (req, res) => {
+const obtenerPreguntas = async (req, res) => {
     const { id } = req.params
 
     try {
         const encuesta = await Encuesta.findById(id)
 
         if (!encuesta) {
-            res.status(404).json({ message: 'Esta encuesta no existe' })
+            return res.status(404).json({ message: 'Esta encuesta no existe' })
         }
 
         const preguntas = await Pregunta.find({ encuesta_id: id })
