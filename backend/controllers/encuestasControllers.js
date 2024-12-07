@@ -2,7 +2,6 @@ const Encuesta = require('../model/encuestaModel')
 const Pregunta = require('../model/preguntaModel')
 const Respuesta = require('../model/respuestaModel')
 const QRCode = require('qrcode')
-const TinyURL = require('tinyurl')
 
 const obtenerEncuestas = async (req, res) => {
     try {
