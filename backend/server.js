@@ -4,10 +4,17 @@ const port = process.env.PORT || 5000
 const express = require('express')
 const connectDB = require('./config/db')
 const { errorHandler } = require('./middleware/errorMiddleware')
+const cors = require('cors')
 
 connectDB()
 
 const app = express()
+
+app.use(cors({
+    origin: 'http://localhost:5173/',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
