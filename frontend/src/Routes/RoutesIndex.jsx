@@ -1,9 +1,9 @@
-import { Routes, Route } from 'react-router-dom'
-import Encuestas from '@/Pages/Encuestas'
-import Home from '@/Pages/Home'
-import Login from '@/Pages/Login'
-import Signup from '@/Pages/Signup'
-import MisEncuestas from '@/Pages/MisEncuestas'
+import { Routes, Route } from 'react-router-dom';
+import Home from '../Pages/Home';
+import Encuestas from '../Pages/Encuestas';
+import Login from '../Pages/Login';
+import Signup from '../Pages/Signup';
+import MisEncuestas from '../Pages/MisEncuestas';
 
 const RoutesIndex = () => {
     return (
@@ -14,7 +14,7 @@ const RoutesIndex = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/misencuestas" element={<MisEncuestas />} />
         </Routes>
-    )
-}
+    );
+};
 
-export default RoutesIndex
+export default RoutesIndex;

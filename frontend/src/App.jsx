@@ -1,16 +1,15 @@
-import RoutesIndex from '@/Routes/RoutesIndex'
-import './App.css'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom';
+import RoutesIndex from './Routes/RoutesIndex'; // Importa las rutas
+import Header from './Components/Header/Header'; // Importa el Header global
+import './App.css'; // Importa los estilos globales (opcional)
 
 function App() {
-
   return (
-    <>
-      <BrowserRouter>
-        <RoutesIndex />
-      </BrowserRouter>
-    </>
-  )
+    <BrowserRouter>
+      <Header />
+      <RoutesIndex />
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
