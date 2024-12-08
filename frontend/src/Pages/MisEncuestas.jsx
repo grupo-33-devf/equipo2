@@ -1,8 +1,12 @@
 import React from 'react'
+import NoContent from '../Components/NoContent/NoContent'
 
 const MisEncuestas = () => {
     return (
-        <main>Mis Encuestas</main>
+        <main>
+            <NoContent />
+        </main>
+
     )
 }
 

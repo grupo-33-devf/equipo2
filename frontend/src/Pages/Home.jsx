@@ -13,12 +13,16 @@ const Home = () => {
                         personalizadas y de alta calidad.
                     </p>
                     <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                        <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
-                            Empieza hoy
-                        </button>
-                        <button type="button" className="btn btn-outline-secondary btn-lg px-4">
-                            Ayuda a otros
-                        </button>
+                        <a href="/signin">
+                            <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
+                                Empieza hoy
+                            </button>
+                        </a>
+                        <a href="/encuestas">
+                            <button type="button" className="btn btn-outline-secondary btn-lg px-4">
+                                Ayuda a otros
+                            </button>
+                        </a>
                     </div>
                 </div>
                 <div className="overflow-hidden" style={{ maxHeight: "30vh" }}>

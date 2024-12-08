@@ -17,7 +17,7 @@ body {
 /* Header y Footer */
 header {
   position: sticky;
-  background-color: #f8f9fa;
+  background-color: white;
   top: 0;
   z-index: 1000;
   width: 100%;
