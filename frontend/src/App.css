@@ -1,4 +1,56 @@
-* {
+/* Asegura que el html y el body ocupen todo el viewport */
+html,
+body {
+  height: 100%;
   margin: 0;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* El contenido principal toma todo el espacio disponible */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header y Footer */
+header {
+  position: sticky;
+  background-color: #f8f9fa;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+main {
+  flex: 1;
+  /* Permite que el contenido principal ocupe el espacio disponible */
+}
+
+main.form-signin {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  /* Para evitar que el formulario se pegue al borde en pantallas pequeñas */
+}
+
+.form-signin form {
+  max-width: 360px;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  /* Fondo blanco */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  text-align: center;
+  width: 100%;
+  background-color: #f8f9fa;
+  /* Fondo claro para distinguir */
 }

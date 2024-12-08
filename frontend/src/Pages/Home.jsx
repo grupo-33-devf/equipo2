@@ -3,7 +3,7 @@ import dashboard from '@/assets/dashboard.png'
 
 const Home = () => {
     return (
-        <>
+        <main>
             <div className="px-4 pt-5 my-5 text-center border-bottom">
                 <h1 className="display-4 fw-bold text-body-emphasis">Insight Master</h1>
                 <h2 className="display-8 fw-bold text-body-emphasis"> Tu mejor opción en encuestas</h2>
@@ -101,7 +101,7 @@ const Home = () => {
             </div>
 
 
-        </>
+        </main>
     )
 }
 

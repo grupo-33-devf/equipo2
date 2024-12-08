@@ -2,7 +2,7 @@ import React from 'react'
 
 const MisEncuestas = () => {
     return (
-        <div>Mis Encuestas</div>
+        <main>Mis Encuestas</main>
     )
 }
 

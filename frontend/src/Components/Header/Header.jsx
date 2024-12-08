@@ -10,7 +10,7 @@ const Header = () => {
     };
 
     return (
-        <div className="container">
+        <header className="container">
             <nav className="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
                 <NavLink
                     to="/"
@@ -58,7 +58,7 @@ const Header = () => {
                     )}
                 </ul>
             </nav>
-        </div>
+        </header>
     );
 };
 
