@@ -1,7 +1,11 @@
 import React from 'react'
 import emoji_pensando from '../../assets/emoji_pensando.png'
+import { useAuth } from '@/Context/AuthContext'
 
 const NoContent = () => {
+
+    const { isAuthenticated } = useAuth()
+
     return (
         <div className="px-4 py-5 my-5 text-center">
             <img
@@ -18,11 +22,22 @@ const NoContent = () => {
                     La mejor forma que tienes de hacerlo es con una encuesta ¡Empieza ahora!
                 </p>
                 <div className="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                    <a href="/signup">
-                        <button type="button" className="btn btn-primary btn-lg px-4 gap-3">
-                            Empieza hoy
-                        </button>
-                    </a>
+
+                    {isAuthenticated ? (
+                        <a href="/misencuestas">
+                            <button type="button" className="btn btn-primary btn-lg px-4 gap-3">
+                                Empieza hoy
+                            </button>
+                        </a>
+                    ) : (
+                        <a href="/signup">
+                            <button type="button" className="btn btn-primary btn-lg px-4 gap-3">
+                                Empieza hoy
+                            </button>
+                        </a>
+                    )
+                    }
+
                 </div>
             </div>
         </div>

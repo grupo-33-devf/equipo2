@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '@/Context/AuthContext'; // Importa el contexto de autenticación
+import { useAuth } from '@/Context/AuthContext';
 
 const Header = () => {
     const { isAuthenticated, logout } = useAuth(); // Obtén el estado y la función de logout

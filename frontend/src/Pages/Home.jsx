@@ -1,7 +1,11 @@
 import React from 'react'
 import dashboard from '@/assets/dashboard.png'
+import { useAuth } from '@/Context/AuthContext'
 
 const Home = () => {
+
+    const { isAuthenticated } = useAuth()
+
     return (
         <main>
             <div className="px-4 pt-5 my-5 text-center border-bottom">
@@ -13,11 +17,21 @@ const Home = () => {
                         personalizadas y de alta calidad.
                     </p>
                     <div className="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                        <a href="/signin">
-                            <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
-                                Empieza hoy
-                            </button>
-                        </a>
+
+                        {!isAuthenticated ? (
+                            <>
+                                <a href="/signin">
+                                    <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
+                                        Empieza hoy
+                                    </button>
+                                </a>
+                            </>
+                        ) : (
+                            <>
+                            </>
+                        )
+                        }
+
                         <a href="/encuestas">
                             <button type="button" className="btn btn-outline-secondary btn-lg px-4">
                                 Ayuda a otros
