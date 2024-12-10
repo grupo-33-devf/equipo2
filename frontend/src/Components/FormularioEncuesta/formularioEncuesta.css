@@ -1,0 +1,53 @@
+.formulario-encuesta {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-encuesta .form-label {
+    font-weight: bold;
+}
+
+.formulario-encuesta input,
+.formulario-encuesta textarea,
+.formulario-encuesta select {
+    margin-bottom: 15px;
+}
+
+.formulario-encuesta button {
+    margin-top: 10px;
+}
+
+.formulario-encuesta h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.opciones {
+    margin-top: 10px;
+}
+
+.opciones .d-flex {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.opciones input {
+    flex-grow: 1;
+}
+
+.opciones button {
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.opciones .btn {
+    margin-top: 10px;
+}
