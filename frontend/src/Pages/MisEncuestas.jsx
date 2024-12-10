@@ -2,21 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NoContent from '../Components/NoContent/NoContent';
 import { useAuth } from '@/Context/AuthContext';
+import FormularioEncuesta from '../Components/FormularioEncuesta/FormularioEncuesta';
 
 const MisEncuestas = () => {
+    const { token } = useAuth();
     const [encuestas, setEncuestas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { token } = useAuth();
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         const fetchEncuestas = async () => {
-            if (!token) {
-                setError('No se encontró un token válido.');
-                setLoading(false);
-                return;
-            }
-
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
                 const response = await axios.get(`${apiUrl}/api/encuestas/misencuestas`, {
@@ -24,8 +20,7 @@ const MisEncuestas = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
-                setEncuestas(response.data); // Ajusta al formato de tu respuesta
+                setEncuestas(response.data);
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -35,8 +30,11 @@ const MisEncuestas = () => {
         };
 
         fetchEncuestas();
-
     }, [token]);
+
+    const handleEncuestaCreada = (nuevaEncuesta) => {
+        setEncuestas([...encuestas, nuevaEncuesta]);
+    };
 
     const handleDelete = async (id) => {
         if (!id) {
@@ -52,7 +50,6 @@ const MisEncuestas = () => {
                 },
             });
 
-            // Elimina la encuesta del estado local
             setEncuestas((prev) => prev.filter((encuesta) => encuesta._id !== id));
             alert('Encuesta eliminada exitosamente.');
         } catch (err) {
@@ -62,23 +59,26 @@ const MisEncuestas = () => {
     };
 
     if (loading) {
-        return (
-            <div className="text-center">
-                <h2>Cargando encuestas...</h2>
-            </div>
-        );
+        return <h2>Cargando encuestas...</h2>;
     }
 
     if (error) {
-        return (
-            <div className="text-center">
-                <h2>{error}</h2>
-            </div>
-        );
+        return <h2>{error}</h2>;
     }
 
     return (
         <div className="container">
+            <button className="btn btn-primary mb-4" onClick={() => setShowForm(!showForm)}>
+                {showForm ? 'Cancelar' : 'Crear Encuesta'}
+            </button>
+
+            {showForm && (
+                <FormularioEncuesta
+                    onEncuestaCreada={handleEncuestaCreada}
+                    cerrarFormulario={() => setShowForm(false)}
+                />
+            )}
+
             {encuestas.length > 0 ? (
                 <table className="table">
                     <thead>
