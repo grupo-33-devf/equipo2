@@ -1,57 +1,59 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para redirección
-import axios from 'axios';
-import '@/styles/form.css';
-import logo from '@/assets/react.svg';
-import { useAuth } from '@/Context/AuthContext'; // Importa el contexto de autenticación
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import '@/styles/form.css'
+import logo from '@/assets/react.svg'
+import { useAuth } from '@/Context/AuthContext'
 
 const Login = () => {
-    // Estado para los datos del formulario
+
     const [formData, setFormData] = useState({
         email: '',
         password: ''
-    });
+    })
 
-    // Estados para manejo de errores y éxito
-    const [error, setError] = useState('');
-    const navigate = useNavigate(); // Inicializa useNavigate
-    const { login } = useAuth(); // Usa el contexto de autenticación
 
-    // Manejo del cambio en los campos del formulario
+    const [error, setError] = useState('')
+    const navigate = useNavigate()
+    const { login } = useAuth()
+
+
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         setFormData({
             ...formData,
             [name]: value
-        });
-    };
+        })
+    }
 
-    // Manejo del envío del formulario
+
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         try {
-            const apiUrl = import.meta.env.VITE_API_URL;
+            const apiUrl = import.meta.env.VITE_API_URL
 
-            // Realiza la solicitud POST usando Axios
-            const response = await axios.post(`${apiUrl}/api/users/login`, formData);
+
+            const response = await axios.post(`${apiUrl}/api/users/login`, formData)
 
             if (response.status === 200) {
-                console.log('Inicio de sesión exitoso:', response.data);
+                console.log('Inicio de sesión exitoso:', response.data)
 
-                // Almacena el token en el contexto y redirige
-                login(response.data.token); // Llama al método de login del contexto
-                navigate('/'); // Redirige al home
+
+                login(response.data.token)
+
+
+                navigate('/')
             } else {
-                setError('Hubo un problema al iniciar sesión.');
+                setError('Hubo un problema al iniciar sesión.')
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                setError('Credenciales inválidas. Verifica tu correo y contraseña.');
+                setError('Credenciales inválidas. Verifica tu correo y contraseña.')
             } else {
-                setError('No se pudo conectar con el servidor.');
+                setError('No se pudo conectar con el servidor.')
             }
         }
-    };
+    }
 
     return (
         <main className="form-signin w-100 m-auto">
@@ -59,7 +61,7 @@ const Login = () => {
                 <img
                     className="mb-4"
                     src={logo}
-                    alt=""
+                    alt="Logo"
                     width={72}
                     height={57}
                 />
@@ -104,7 +106,7 @@ const Login = () => {
                 </button>
             </form>
         </main>
-    );
-};
+    )
+}
 
-export default Login;
+export default Login
