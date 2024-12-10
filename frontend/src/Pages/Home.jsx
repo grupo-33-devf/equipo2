@@ -20,23 +20,29 @@ const Home = () => {
 
                         {!isAuthenticated ? (
                             <>
-                                <a href="/signin">
+                                <a href="/signup">
                                     <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
                                         Empieza hoy
+                                    </button>
+                                </a>
+                                <a href="/encuestas">
+                                    <button type="button" className="btn btn-outline-secondary btn-lg px-4">
+                                        Ayuda a otros
                                     </button>
                                 </a>
                             </>
                         ) : (
                             <>
+                                <a href="/encuestas">
+                                    <button type="button" className="btn btn-primary btn-lg px-4 me-sm-3">
+                                        Ayuda a otros
+                                    </button>
+                                </a>
                             </>
                         )
                         }
 
-                        <a href="/encuestas">
-                            <button type="button" className="btn btn-outline-secondary btn-lg px-4">
-                                Ayuda a otros
-                            </button>
-                        </a>
+
                     </div>
                 </div>
                 <div className="overflow-hidden" style={{ maxHeight: "30vh" }}>
@@ -61,7 +67,7 @@ const Home = () => {
                             className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3"
                             style={{ width: '3rem', height: '3rem', borderRadius: '50%' }}
                         >
-                            <i class="bi bi-emoji-laughing"></i>
+                            <i className="bi bi-emoji-laughing"></i>
                         </div>
                         <h3 className="fs-2 text-body-emphasis">Totalmente gratis</h3>
                         <p>
@@ -81,7 +87,7 @@ const Home = () => {
                             className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3"
                             style={{ width: '3rem', height: '3rem', borderRadius: '50%' }}
                         >
-                            <i class="bi bi-bar-chart"></i>
+                            <i className="bi bi-bar-chart"></i>
                         </div>
                         <h3 className="fs-2 text-body-emphasis">Análisis en Tiempo Real</h3>
                         <p>
@@ -101,7 +107,7 @@ const Home = () => {
                             className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3"
                             style={{ width: '3rem', height: '3rem', borderRadius: '50%' }}
                         >
-                            <i class="bi bi-share"></i>
+                            <i className="bi bi-share"></i>
                         </div>
                         <h3 className="fs-2 text-body-emphasis">Compartir con Facilidad</h3>
                         <p>
