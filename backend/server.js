@@ -10,18 +10,26 @@ connectDB();
 
 const app = express();
 
-app.use(cors({
-    origin: 'http://localhost:5173',
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
-}));
+};
 
+app.use(cors(corsOptions));
 app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 
 app.use('/api/users', require('./routes/usuariosRoutes'));
 app.use('/api/encuestas', require('./routes/encuestasRoutes'));
