@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '@/Context/AuthContext'
-import './FormularioEncuesta.css'
+import './formularioEncuesta.css'
 
 const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
     const { token } = useAuth()
