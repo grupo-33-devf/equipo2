@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '@/styles/form.css';
-import logo from '@/assets/react.svg';
+import logo from '@/assets/logo.png';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -54,8 +54,8 @@ const Signup = () => {
                     className="mb-4"
                     src={logo}
                     alt=""
-                    width={72}
-                    height={57}
+                    width={90}
+                    height={80}
                 />
                 <h1 className="h3 mb-3 fw-normal">Regístrate</h1>
 
