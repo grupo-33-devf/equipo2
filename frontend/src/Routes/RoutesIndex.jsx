@@ -4,7 +4,7 @@ import Encuestas from '../Pages/Encuestas'
 import Login from '../Pages/Login'
 import Signup from '../Pages/Signup'
 import MisEncuestas from '../Pages/MisEncuestas'
-import EncuestaVista from '../Pages/Encuestavista'
+import EncuestaVista from '../Pages/EncuestaVista'
 
 const RoutesIndex = () => {
     return (
