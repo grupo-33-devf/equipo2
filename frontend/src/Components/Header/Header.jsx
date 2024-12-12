@@ -1,13 +1,37 @@
-import { NavLink } from 'react-router-dom';
-import { useAuth } from '@/Context/AuthContext';
+import { NavLink } from 'react-router-dom'
+import { useAuth } from '@/Context/AuthContext'
+import React, { useState, useEffect } from 'react'
 
 const Header = () => {
-    const { isAuthenticated, logout } = useAuth(); // Obtén el estado y la función de logout
+    const { isAuthenticated, logout } = useAuth()
 
     const handleLogout = () => {
-        logout(); // Limpia el token
-        window.location.href = '/'; // Redirige al home
-    };
+        logout()
+        window.location.href = '/'
+    }
+
+    const [darkMode, setDarkMode] = useState(false)
+
+    useEffect(() => {
+
+        const savedMode = localStorage.getItem('darkMode') === 'true'
+        setDarkMode(savedMode)
+        if (savedMode) {
+            document.body.classList.add('dark-mode')
+        }
+    }, [])
+
+    const toggleDarkMode = () => {
+        const newMode = !darkMode
+        setDarkMode(newMode)
+        if (newMode) {
+            document.body.classList.add('dark-mode')
+        } else {
+            document.body.classList.remove('dark-mode')
+        }
+
+        localStorage.setItem('darkMode', newMode)
+    }
 
     return (
         <header className="container">
@@ -56,10 +80,23 @@ const Header = () => {
                             </li>
                         </>
                     )}
+                    <li className="nav-item">
+                        <button
+                            className="btn btn-outline-secondary nav-link"
+                            onClick={toggleDarkMode}
+                            style={{ border: 'none', background: 'none' }}
+                        >
+                            {darkMode ? (
+                                <i className="bi bi-sun-fill"></i>
+                            ) : (
+                                <i className="bi bi-moon-fill"></i>
+                            )}
+                        </button>
+                    </li>
                 </ul>
             </nav>
         </header>
-    );
-};
+    )
+}
 
-export default Header;
+export default Header
