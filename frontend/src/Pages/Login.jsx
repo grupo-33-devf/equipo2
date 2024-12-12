@@ -6,17 +6,14 @@ import logo from '@/assets/react.svg'
 import { useAuth } from '@/Context/AuthContext'
 
 const Login = () => {
-
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     })
 
-
     const [error, setError] = useState('')
     const navigate = useNavigate()
     const { login } = useAuth()
-
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -26,21 +23,18 @@ const Login = () => {
         })
     }
 
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
             const apiUrl = import.meta.env.VITE_API_URL
-
 
             const response = await axios.post(`${apiUrl}/api/users/login`, formData)
 
             if (response.status === 200) {
                 console.log('Inicio de sesión exitoso:', response.data)
 
-
                 login(response.data.token)
-
+                localStorage.setItem('usuario_id', response.data.usuario_id)
 
                 navigate('/')
             } else {
@@ -55,6 +49,7 @@ const Login = () => {
         }
     }
 
+
     return (
         <main className="form-signin w-100 m-auto">
             <form onSubmit={handleSubmit}>
@@ -67,10 +62,8 @@ const Login = () => {
                 />
                 <h1 className="h3 mb-3 fw-normal">Inicia Sesión</h1>
 
-                {/* Mensajes de error */}
                 {error && <div className="alert alert-danger">{error}</div>}
 
-                {/* Campo para el email */}
                 <div className="form-floating">
                     <input
                         type="email"
@@ -85,7 +78,6 @@ const Login = () => {
                     <label htmlFor="floatingInput">Correo electrónico</label>
                 </div>
 
-                {/* Campo para la contraseña */}
                 <div className="form-floating">
                     <input
                         type="password"
@@ -100,7 +92,6 @@ const Login = () => {
                     <label htmlFor="floatingPassword">Contraseña</label>
                 </div>
 
-                {/* Botón de envío */}
                 <button className="btn btn-primary w-100 py-2" type="submit">
                     Iniciar Sesión
                 </button>

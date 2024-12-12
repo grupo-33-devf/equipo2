@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import EncuestaCard from '../Components/EncuestaCard/EncuestaCard';
-import NoContent from '../Components/NoContent/NoContent';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import EncuestaCard from '../Components/EncuestaCard/EncuestaCard'
+import NoContent from '../Components/NoContent/NoContent'
+import axios from 'axios'
 
 const Encuestas = () => {
-    const [encuestas, setEncuestas] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [encuestas, setEncuestas] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchEncuestas = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
-                const response = await axios.get(`${apiUrl}/api/encuestas/`);
-                setEncuestas(response.data); // Asegúrate de que `response.data` contiene un array de encuestas
-                setLoading(false);
+                const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+                const response = await axios.get(`${apiUrl}/api/encuestas/`)
+                setEncuestas(response.data)
+                setLoading(false)
             } catch (err) {
-                setError('Hubo un problema al cargar las encuestas.');
-                setLoading(false);
+                setError('Hubo un problema al cargar las encuestas.')
+                setLoading(false)
             }
-        };
+        }
 
-        fetchEncuestas();
-    }, []);
+        fetchEncuestas()
+    }, [])
 
     if (loading) {
         return (
@@ -31,7 +33,7 @@ const Encuestas = () => {
                     <h1 className="display-5 fw-bold text-body-emphasis">Cargando encuestas...</h1>
                 </div>
             </main>
-        );
+        )
     }
 
     if (error) {
@@ -42,7 +44,7 @@ const Encuestas = () => {
                     <p>{error}</p>
                 </div>
             </main>
-        );
+        )
     }
 
     return (
@@ -62,12 +64,15 @@ const Encuestas = () => {
             <div className="container">
                 <div className="row">
                     {encuestas.length > 0 ? (
-                        encuestas.map((encuesta, index) => (
-                            <div key={encuesta.id || index} className="col-md-4">
-                                <EncuestaCard
-                                    header={encuesta.titulo}
-                                    title={encuesta.descripcion}
-                                />
+                        encuestas.map((encuesta) => (
+                            <div key={encuesta._id} className="col-md-4">
+
+                                <div onClick={() => navigate(`/encuestas/${encuesta._id}`)} style={{ cursor: 'pointer' }}>
+                                    <EncuestaCard
+                                        header={encuesta.titulo}
+                                        title={encuesta.descripcion}
+                                    />
+                                </div>
                             </div>
                         ))
                     ) : (
@@ -76,7 +81,7 @@ const Encuestas = () => {
                 </div>
             </div>
         </main>
-    );
-};
+    )
+}
 
-export default Encuestas;
+export default Encuestas
