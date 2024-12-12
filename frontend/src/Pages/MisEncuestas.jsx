@@ -1,69 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import NoContent from '../Components/NoContent/NoContent';
-import { useAuth } from '@/Context/AuthContext';
-import FormularioEncuesta from '../Components/FormularioEncuesta/FormularioEncuesta';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import NoContent from '../Components/NoContent/NoContent'
+import { useAuth } from '@/Context/AuthContext'
+import FormularioEncuesta from '../Components/FormularioEncuesta/FormularioEncuesta'
 
 const MisEncuestas = () => {
-    const { token } = useAuth();
-    const [encuestas, setEncuestas] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showForm, setShowForm] = useState(false);
+    const { token } = useAuth()
+    const [encuestas, setEncuestas] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [showForm, setShowForm] = useState(false)
 
     useEffect(() => {
+        if (!token) {
+            setLoading(false)
+            return
+        }
+
         const fetchEncuestas = async () => {
+            setLoading(true)
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
                 const response = await axios.get(`${apiUrl}/api/encuestas/misencuestas`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                });
-                setEncuestas(response.data);
-                setLoading(false);
+                })
+                setEncuestas(response.data)
             } catch (err) {
-                console.error(err);
-                setError('Hubo un problema al cargar tus encuestas.');
-                setLoading(false);
+                console.error(err)
+                setError('Hubo un problema al cargar tus encuestas.')
+            } finally {
+                setLoading(false)
             }
-        };
+        }
 
-        fetchEncuestas();
-    }, [token]);
+        fetchEncuestas()
+    }, [token])
 
     const handleEncuestaCreada = (nuevaEncuesta) => {
-        setEncuestas([...encuestas, nuevaEncuesta]);
-    };
+        setEncuestas([...encuestas, nuevaEncuesta])
+    }
 
     const handleDelete = async (id) => {
         if (!id) {
-            alert('ID de encuesta no válido.');
-            return;
+            alert('ID de encuesta no válido.')
+            return
         }
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
             await axios.delete(`${apiUrl}/api/encuestas/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            });
+            })
 
-            setEncuestas((prev) => prev.filter((encuesta) => encuesta._id !== id));
-            alert('Encuesta eliminada exitosamente.');
+            setEncuestas((prev) => prev.filter((encuesta) => encuesta._id !== id))
+            alert('Encuesta eliminada exitosamente.')
         } catch (err) {
-            console.error('Error al eliminar la encuesta:', err);
-            alert('No se pudo eliminar la encuesta.');
+            console.error('Error al eliminar la encuesta:', err)
+            alert('No se pudo eliminar la encuesta.')
         }
-    };
+    }
+
+    if (!token) {
+        return <h2>Inicia sesión para ver tus encuestas.</h2>
+    }
 
     if (loading) {
-        return <h2>Cargando encuestas...</h2>;
+        return <h2>Cargando encuestas...</h2>
     }
 
     if (error) {
-        return <h2>{error}</h2>;
+        return <h2>{error}</h2>
     }
 
     return (
@@ -113,7 +123,7 @@ const MisEncuestas = () => {
                 <NoContent />
             )}
         </div>
-    );
-};
+    )
+}
 
-export default MisEncuestas;
+export default MisEncuestas
