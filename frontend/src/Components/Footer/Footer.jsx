@@ -30,8 +30,8 @@ const Footer = () => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a href="https://github.com/grupo-33-devf/equipo2" className="nav-link px-2 text-body-secondary">
-                            About
+                        <a href="https://www.ingjosemario.com" className="nav-link px-2 text-body-secondary">
+                            ¡Visita mi pagina!
                         </a>
                     </li>
                 </ul>

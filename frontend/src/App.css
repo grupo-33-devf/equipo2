@@ -1,4 +1,3 @@
-/* Asegura que el html y el body ocupen todo el viewport */
 html,
 body {
   height: 100%;
@@ -7,14 +6,12 @@ body {
   flex-direction: column;
 }
 
-/* El contenido principal toma todo el espacio disponible */
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Header y Footer */
 header {
   position: sticky;
   background-color: white;
@@ -25,7 +22,6 @@ header {
 
 main {
   flex: 1;
-  /* Permite que el contenido principal ocupe el espacio disponible */
 }
 
 main.form-signin {
@@ -34,7 +30,6 @@ main.form-signin {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  /* Para evitar que el formulario se pegue al borde en pantallas pequeñas */
 }
 
 .form-signin form {
@@ -44,7 +39,7 @@ main.form-signin {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  /* Fondo blanco */
+
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -52,5 +47,109 @@ footer {
   text-align: center;
   width: 100%;
   background-color: #f8f9fa;
-  /* Fondo claro para distinguir */
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode header {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+body.dark-mode footer {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+body.dark-mode main {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .btn {
+  background-color: #333;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-outline-secondary {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #ffffff;
+  color: #121212;
+}
+
+body.dark-mode .form-signin form {
+  background-color: #1f1f1f;
+  border-color: #333;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #aaa;
+}
+
+body.dark-mode .table {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td {
+  border-color: #333;
+}
+
+body.dark-mode a {
+  color: #ffffff !important;
+}
+
+body.dark-mode a:hover {
+  color: #b3b3b3 !important;
+}
+
+body.dark-mode footer a {
+  color: #ffffff !important;
+}
+
+body.dark-mode footer p {
+  color: #ffffff !important;
+}
+
+body.dark-mode footer a:hover {
+  color: #b3b3b3 !important;
+}
+
+body.dark-mode h1 {
+  color: #ffffff !important;
+}
+
+body.dark-mode h2 {
+  color: #ffffff !important;
+}
+
+body.dark-mode h3 {
+  color: #ffffff !important;
+}
+
+body.dark-mode td {
+  background-color: #333 !important;
+  color: #ffffff;
+}
+
+body.dark-mode tr {
+  background-color: #333 !important;
+  color: #ffffff;
 }
