@@ -1,106 +1,105 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useParams, useNavigate } from 'react-router-dom'
 
 const EncuestaVista = () => {
-    const { id } = useParams(); // ID de la encuesta
-    const navigate = useNavigate();
-    const [encuesta, setEncuesta] = useState(null);
-    const [preguntas, setPreguntas] = useState([]);
-    const [respuestas, setRespuestas] = useState({});
-    const [estadisticas, setEstadisticas] = useState({});
-    const [isCreador, setIsCreador] = useState(false);
-    const [error, setError] = useState(null);
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const [encuesta, setEncuesta] = useState(null)
+    const [preguntas, setPreguntas] = useState([])
+    const [respuestas, setRespuestas] = useState({})
+    const [estadisticas, setEstadisticas] = useState({})
+    const [isCreador, setIsCreador] = useState(false)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-                // Datos de la encuesta
-                const encuestaResponse = await axios.get(`${apiUrl}/api/encuestas/${id}`);
-                setEncuesta(encuestaResponse.data);
 
-                // Revisar si es el creador
-                const creadorId = encuestaResponse.data.creador_id;
-                const usuarioId = localStorage.getItem('usuario_id');
-                setIsCreador(creadorId === usuarioId);
+                const encuestaResponse = await axios.get(`${apiUrl}/api/encuestas/${id}`)
+                setEncuesta(encuestaResponse.data)
 
-                // Preguntas de la encuesta
-                const preguntasResponse = await axios.get(`${apiUrl}/api/preguntas/${id}`);
-                setPreguntas(preguntasResponse.data);
 
-                // Estadísticas de respuestas (si es creador)
+                const creadorId = encuestaResponse.data.creador_id
+                const usuarioId = localStorage.getItem('usuario_id')
+                setIsCreador(creadorId === usuarioId)
+
+
+                const preguntasResponse = await axios.get(`${apiUrl}/api/preguntas/${id}`)
+                setPreguntas(preguntasResponse.data)
+
+
                 if (creadorId === usuarioId) {
-                    const estadisticasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`);
-                    setEstadisticas(estadisticasResponse.data.respuestas || {});
+                    const estadisticasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`)
+                    setEstadisticas(estadisticasResponse.data.respuestas || {})
                 }
             } catch (err) {
-                console.error('Error al cargar los datos:', err);
-                setError('Hubo un problema al cargar la encuesta.');
+                console.error('Error al cargar los datos:', err)
+                setError('Hubo un problema al cargar la encuesta.')
             }
-        };
+        }
 
-        fetchData();
-    }, [id]);
+        fetchData()
+    }, [id])
 
     const handleRespuestaChange = (preguntaId, respuesta) => {
-        setRespuestas({ ...respuestas, [preguntaId]: respuesta });
-    };
+        setRespuestas({ ...respuestas, [preguntaId]: respuesta })
+    }
 
     const handleSubmit = async (e) => {
-        if (e) e.preventDefault();
+        if (e) e.preventDefault()
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
             const respuestasArray = Object.entries(respuestas).map(([preguntaId, respuesta]) => ({
                 encuesta_id: id,
                 pregunta_id: preguntaId,
                 respuesta,
-            }));
+            }))
 
             for (const respuesta of respuestasArray) {
-                await axios.post(`${apiUrl}/api/respuestas`, respuesta);
+                await axios.post(`${apiUrl}/api/respuestas`, respuesta)
             }
 
-            alert('Respuestas enviadas exitosamente.');
-            navigate('/encuestas'); // Redirige a /encuestas
+            alert('Respuestas enviadas exitosamente.')
+            navigate('/encuestas')
         } catch (err) {
-            console.error('Error al enviar respuestas:', err);
-            alert('Hubo un problema al enviar las respuestas.');
+            console.error('Error al enviar respuestas:', err)
+            alert('Hubo un problema al enviar las respuestas.')
         }
-    };
+    }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault();
-            handleSubmit();
+            e.preventDefault()
+            handleSubmit()
         }
-    };
+    }
 
     const calcularPorcentajes = (respuestas) => {
-        const totalRespuestas = respuestas.length;
+        const totalRespuestas = respuestas.length
         const conteo = respuestas.reduce((acc, respuesta) => {
-            acc[respuesta] = (acc[respuesta] || 0) + 1;
-            return acc;
-        }, {});
+            acc[respuesta] = (acc[respuesta] || 0) + 1
+            return acc
+        }, {})
 
-        // Ordenar por cantidad de respuestas (descendente)
         return Object.entries(conteo)
             .map(([opcion, cantidad]) => ({
                 opcion,
                 cantidad,
                 porcentaje: ((cantidad / totalRespuestas) * 100).toFixed(2),
             }))
-            .sort((a, b) => b.cantidad - a.cantidad); // Orden descendente
-    };
+            .sort((a, b) => b.cantidad - a.cantidad)
+    }
 
     if (error) {
-        return <div className="alert alert-danger">{error}</div>;
+        return <div className="alert alert-danger">{error}</div>
     }
 
     if (!encuesta) {
-        return <div>Cargando encuesta...</div>;
+        return <div>Cargando encuesta...</div>
     }
 
     return (
@@ -166,7 +165,7 @@ const EncuestaVista = () => {
                 <div className="mt-5">
                     <h3>Estadísticas</h3>
                     {Object.entries(estadisticas).map(([pregunta, respuestas]) => {
-                        const porcentajes = calcularPorcentajes(respuestas);
+                        const porcentajes = calcularPorcentajes(respuestas)
                         return (
                             <div key={pregunta}>
                                 <h5>{pregunta}</h5>
@@ -178,12 +177,12 @@ const EncuestaVista = () => {
                                     ))}
                                 </ul>
                             </div>
-                        );
+                        )
                     })}
                 </div>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default EncuestaVista;
+export default EncuestaVista
