@@ -23,7 +23,7 @@ const encuestaSchema = new mongoose.Schema({
         required: [true, 'Por favor teclea una fecha final'],
         validate: {
             validator: function (fecha) {
-                return fecha > this.fecha_inicio;
+                return fecha >= this.fecha_inicio;
             },
             message: 'La fecha final es menor a la fecha de inicio'
         }
