@@ -29,7 +29,6 @@ const EncuestaVista = () => {
                 const fechaActual = new Date()
                 const fechaInicio = new Date(encuestaData.fecha_inicio)
                 const fechaFin = new Date(encuestaData.fecha_fin)
-
                 if (fechaActual < fechaInicio || fechaActual > fechaFin) {
                     setCerrada(true)
                 }
@@ -39,8 +38,13 @@ const EncuestaVista = () => {
                     setPreguntas(preguntasResponse.data)
 
                     if (creadorId === usuarioId) {
-                        const estadisticasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`)
-                        setEstadisticas(estadisticasResponse.data.respuestas || {})
+                        try {
+                            const estadisticasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`)
+                            setEstadisticas(estadisticasResponse.data.respuestas || {})
+                        } catch (err) {
+                            console.warn('No hay respuestas disponibles para esta encuesta.')
+                            setEstadisticas({})
+                        }
                     }
                 }
             } catch (err) {
