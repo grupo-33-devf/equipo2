@@ -3,9 +3,11 @@ import axios from 'axios'
 import NoContent from '../Components/NoContent/NoContent'
 import { useAuth } from '@/Context/AuthContext'
 import FormularioEncuesta from '../Components/FormularioEncuesta/FormularioEncuesta'
+import { useNavigate } from 'react-router-dom'
 
 const MisEncuestas = () => {
     const { token } = useAuth()
+    const navigate = useNavigate()
     const [encuestas, setEncuestas] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -64,6 +66,11 @@ const MisEncuestas = () => {
         }
     }
 
+    const isEncuestaDisponible = (fechaInicio, fechaFin) => {
+        const fechaActual = new Date()
+        return fechaActual >= new Date(fechaInicio) && fechaActual <= new Date(fechaFin)
+    }
+
     if (!token) {
         return <h2>Inicia sesión para ver tus encuestas.</h2>
     }
@@ -93,6 +100,7 @@ const MisEncuestas = () => {
                 <table className="table">
                     <thead>
                         <tr>
+                            <th>Estado</th>
                             <th>Título</th>
                             <th>Descripción</th>
                             <th>Fecha de Inicio</th>
@@ -101,22 +109,37 @@ const MisEncuestas = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {encuestas.map((encuesta) => (
-                            <tr key={encuesta._id}>
-                                <td>{encuesta.titulo}</td>
-                                <td>{encuesta.descripcion}</td>
-                                <td>{new Date(encuesta.fecha_inicio).toLocaleDateString()}</td>
-                                <td>{new Date(encuesta.fecha_fin).toLocaleDateString()}</td>
-                                <td>
-                                    <button
-                                        className="btn btn-danger"
-                                        onClick={() => handleDelete(encuesta._id)}
-                                    >
-                                        <i className="bi bi-trash"></i> Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {encuestas.map((encuesta) => {
+                            const disponible = isEncuestaDisponible(encuesta.fecha_inicio, encuesta.fecha_fin)
+                            return (
+                                <tr key={encuesta._id}>
+                                    <td>
+                                        <i
+                                            className={`bi ${disponible ? 'bi-circle-fill text-success' : 'bi-circle-fill text-danger'}`}
+                                            title={disponible ? 'Disponible' : 'No disponible'}
+                                        ></i>
+                                    </td>
+                                    <td>{encuesta.titulo}</td>
+                                    <td>{encuesta.descripcion}</td>
+                                    <td>{new Date(encuesta.fecha_inicio).toLocaleDateString()}</td>
+                                    <td>{new Date(encuesta.fecha_fin).toLocaleDateString()}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-secondary me-2"
+                                            onClick={() => navigate(`/encuestas/${encuesta._id}`)}
+                                        >
+                                            <i className="bi bi-box-arrow-up-right"></i> Ver Encuesta
+                                        </button>
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleDelete(encuesta._id)}
+                                        >
+                                            <i className="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             ) : (

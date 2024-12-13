@@ -1,82 +1,91 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import { useAuth } from '@/Context/AuthContext'
-import './formularioEncuesta.css'
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '@/Context/AuthContext';
+import './formularioEncuesta.css';
 
 const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
-    const { token } = useAuth()
+    const { token } = useAuth();
 
-    const [titulo, setTitulo] = useState('')
-    const [descripcion, setDescripcion] = useState('')
-    const [fechaInicio, setFechaInicio] = useState('')
-    const [fechaFin, setFechaFin] = useState('')
-    const [preguntas, setPreguntas] = useState([])
-    const [mensajeExito, setMensajeExito] = useState('')
-    const [mensajeError, setMensajeError] = useState('')
+    const [titulo, setTitulo] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [fechaInicio, setFechaInicio] = useState('');
+    const [fechaFin, setFechaFin] = useState('');
+    const [preguntas, setPreguntas] = useState([]);
+    const [mensajeExito, setMensajeExito] = useState('');
+    const [mensajeError, setMensajeError] = useState('');
 
     const handleAgregarPregunta = () => {
         setPreguntas([
             ...preguntas,
             { texto: '', tipo: 'opcion_multiple', opciones: [] },
-        ])
-    }
+        ]);
+    };
 
     const handleEliminarPregunta = (index) => {
-        const nuevasPreguntas = preguntas.filter((_, i) => i !== index)
-        setPreguntas(nuevasPreguntas)
-    }
+        const nuevasPreguntas = preguntas.filter((_, i) => i !== index);
+        setPreguntas(nuevasPreguntas);
+    };
 
     const handlePreguntaChange = (index, field, value) => {
-        const nuevasPreguntas = [...preguntas]
-        nuevasPreguntas[index][field] = value
-        setPreguntas(nuevasPreguntas)
-    }
+        const nuevasPreguntas = [...preguntas];
+        nuevasPreguntas[index][field] = value;
+        setPreguntas(nuevasPreguntas);
+    };
 
     const handleAgregarOpcion = (index) => {
-        const nuevasPreguntas = [...preguntas]
-        nuevasPreguntas[index].opciones.push('')
-        setPreguntas(nuevasPreguntas)
-    }
+        const nuevasPreguntas = [...preguntas];
+        nuevasPreguntas[index].opciones.push('');
+        setPreguntas(nuevasPreguntas);
+    };
 
     const handleEliminarOpcion = (preguntaIndex, opcionIndex) => {
-        const nuevasPreguntas = [...preguntas]
-        nuevasPreguntas[preguntaIndex].opciones.splice(opcionIndex, 1)
-        setPreguntas(nuevasPreguntas)
-    }
+        const nuevasPreguntas = [...preguntas];
+        nuevasPreguntas[preguntaIndex].opciones.splice(opcionIndex, 1);
+        setPreguntas(nuevasPreguntas);
+    };
 
     const handleOpcionChange = (preguntaIndex, opcionIndex, value) => {
-        const nuevasPreguntas = [...preguntas]
-        nuevasPreguntas[preguntaIndex].opciones[opcionIndex] = value
-        setPreguntas(nuevasPreguntas)
-    }
+        const nuevasPreguntas = [...preguntas];
+        nuevasPreguntas[preguntaIndex].opciones[opcionIndex] = value;
+        setPreguntas(nuevasPreguntas);
+    };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setMensajeExito('')
-        setMensajeError('')
+        e.preventDefault();
+        setMensajeExito('');
+        setMensajeError('');
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+            // Ajustar fecha de inicio a medianoche local
+            const fechaInicioAjustada = new Date(fechaInicio);
+            fechaInicioAjustada.setMinutes(fechaInicioAjustada.getMinutes() + fechaInicioAjustada.getTimezoneOffset());
 
+            // Ajustar fecha final al último segundo del día
+            const fechaFinAjustada = new Date(fechaFin);
+            fechaFinAjustada.setMinutes(fechaFinAjustada.getMinutes() + fechaFinAjustada.getTimezoneOffset());
+            fechaFinAjustada.setHours(23, 59, 59, 999); // Establece la hora a 23:59:59.999
+
+            // Crear la encuesta
             const encuestaResponse = await axios.post(
                 `${apiUrl}/api/encuestas`,
                 {
                     titulo,
                     descripcion,
-                    fecha_inicio: fechaInicio,
-                    fecha_fin: fechaFin,
+                    fecha_inicio: fechaInicioAjustada.toISOString(),
+                    fecha_fin: fechaFinAjustada.toISOString(),
                 },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
-            )
+            );
 
-            const encuestaId = encuestaResponse.data._id
+            const encuestaId = encuestaResponse.data._id;
 
-
+            // Crear las preguntas
             for (const pregunta of preguntas) {
                 await axios.post(
                     `${apiUrl}/api/preguntas`,
@@ -91,22 +100,22 @@ const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
                             Authorization: `Bearer ${token}`,
                         },
                     }
-                )
+                );
             }
 
-            setMensajeExito('Encuesta guardada exitosamente.')
-            setTitulo('')
-            setDescripcion('')
-            setFechaInicio('')
-            setFechaFin('')
-            setPreguntas([])
-            onEncuestaCreada(encuestaResponse.data)
-            cerrarFormulario()
+            setMensajeExito('Encuesta guardada exitosamente.');
+            setTitulo('');
+            setDescripcion('');
+            setFechaInicio('');
+            setFechaFin('');
+            setPreguntas([]);
+            onEncuestaCreada(encuestaResponse.data);
+            cerrarFormulario();
         } catch (err) {
-            console.error('Error al guardar la encuesta:', err)
-            setMensajeError('Hubo un problema al guardar la encuesta.')
+            console.error('Error al guardar la encuesta:', err);
+            setMensajeError('Hubo un problema al guardar la encuesta.');
         }
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit} className="formulario-encuesta mb-4">
@@ -231,7 +240,7 @@ const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
                 Guardar Encuesta
             </button>
         </form>
-    )
-}
+    );
+};
 
-export default FormularioEncuesta
+export default FormularioEncuesta;

@@ -11,29 +11,41 @@ const EncuestaVista = () => {
     const [estadisticas, setEstadisticas] = useState({})
     const [isCreador, setIsCreador] = useState(false)
     const [error, setError] = useState(null)
+    const [cerrada, setCerrada] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-
                 const encuestaResponse = await axios.get(`${apiUrl}/api/encuestas/${id}`)
-                setEncuesta(encuestaResponse.data)
+                const encuestaData = encuestaResponse.data
+                setEncuesta(encuestaData)
 
-
-                const creadorId = encuestaResponse.data.creador_id
+                const creadorId = encuestaData.creador_id
                 const usuarioId = localStorage.getItem('usuario_id')
                 setIsCreador(creadorId === usuarioId)
 
+                const fechaActual = new Date()
+                const fechaInicio = new Date(encuestaData.fecha_inicio)
+                const fechaFin = new Date(encuestaData.fecha_fin)
+                if (fechaActual < fechaInicio || fechaActual > fechaFin) {
+                    setCerrada(true)
+                }
 
-                const preguntasResponse = await axios.get(`${apiUrl}/api/preguntas/${id}`)
-                setPreguntas(preguntasResponse.data)
+                if (creadorId === usuarioId || !(fechaActual < fechaInicio || fechaActual > fechaFin)) {
+                    const preguntasResponse = await axios.get(`${apiUrl}/api/preguntas/${id}`)
+                    setPreguntas(preguntasResponse.data)
 
-
-                if (creadorId === usuarioId) {
-                    const estadisticasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`)
-                    setEstadisticas(estadisticasResponse.data.respuestas || {})
+                    if (creadorId === usuarioId) {
+                        try {
+                            const estadisticasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`)
+                            setEstadisticas(estadisticasResponse.data.respuestas || {})
+                        } catch (err) {
+                            console.warn('No hay respuestas disponibles para esta encuesta.')
+                            setEstadisticas({})
+                        }
+                    }
                 }
             } catch (err) {
                 console.error('Error al cargar los datos:', err)
@@ -100,6 +112,18 @@ const EncuestaVista = () => {
 
     if (!encuesta) {
         return <div>Cargando encuesta...</div>
+    }
+
+    if (cerrada && !isCreador) {
+        return (
+            <div className="container mt-5">
+                <h1>Encuesta cerrada</h1>
+                <p>Esta encuesta no está disponible actualmente.</p>
+                <button className="btn btn-primary" onClick={() => navigate('/encuestas')}>
+                    Volver a Encuestas
+                </button>
+            </div>
+        )
     }
 
     return (
