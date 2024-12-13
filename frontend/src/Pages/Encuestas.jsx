@@ -1,30 +1,38 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import EncuestaCard from '../Components/EncuestaCard/EncuestaCard'
-import NoContent from '../Components/NoContent/NoContent'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import EncuestaCard from '../Components/EncuestaCard/EncuestaCard';
+import NoContent from '../Components/NoContent/NoContent';
+import axios from 'axios';
 
 const Encuestas = () => {
-    const [encuestas, setEncuestas] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const navigate = useNavigate()
+    const [encuestas, setEncuestas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEncuestas = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
-                const response = await axios.get(`${apiUrl}/api/encuestas/`)
-                setEncuestas(response.data)
-                setLoading(false)
-            } catch (err) {
-                setError('Hubo un problema al cargar las encuestas.')
-                setLoading(false)
-            }
-        }
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                const response = await axios.get(`${apiUrl}/api/encuestas/`);
 
-        fetchEncuestas()
-    }, [])
+                const fechaActual = new Date();
+                const encuestasFiltradas = response.data.filter((encuesta) => {
+                    const fechaInicio = new Date(encuesta.fecha_inicio);
+                    const fechaFin = new Date(encuesta.fecha_fin);
+                    return fechaInicio <= fechaActual && fechaFin >= fechaActual;
+                });
+
+                setEncuestas(encuestasFiltradas);
+                setLoading(false);
+            } catch (err) {
+                setError('Hubo un problema al cargar las encuestas.');
+                setLoading(false);
+            }
+        };
+
+        fetchEncuestas();
+    }, []);
 
     if (loading) {
         return (
@@ -33,7 +41,7 @@ const Encuestas = () => {
                     <h1 className="display-5 fw-bold text-body-emphasis">Cargando encuestas...</h1>
                 </div>
             </main>
-        )
+        );
     }
 
     if (error) {
@@ -44,7 +52,7 @@ const Encuestas = () => {
                     <p>{error}</p>
                 </div>
             </main>
-        )
+        );
     }
 
     return (
@@ -66,8 +74,10 @@ const Encuestas = () => {
                     {encuestas.length > 0 ? (
                         encuestas.map((encuesta) => (
                             <div key={encuesta._id} className="col-md-4">
-
-                                <div onClick={() => navigate(`/encuestas/${encuesta._id}`)} style={{ cursor: 'pointer' }}>
+                                <div
+                                    onClick={() => navigate(`/encuestas/${encuesta._id}`)}
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     <EncuestaCard
                                         header={encuesta.titulo}
                                         title={encuesta.descripcion}
@@ -81,7 +91,7 @@ const Encuestas = () => {
                 </div>
             </div>
         </main>
-    )
-}
+    );
+};
 
-export default Encuestas
+export default Encuestas;
