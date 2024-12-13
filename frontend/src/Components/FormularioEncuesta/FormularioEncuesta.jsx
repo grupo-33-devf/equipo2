@@ -55,49 +55,26 @@ const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
         setMensajeExito('');
         setMensajeError('');
 
-        const fechaActual = new Date().toISOString().split('T')[0];
-
-        if (fechaInicio < fechaActual) {
-            setMensajeError('La fecha de inicio debe ser mayor o igual a la fecha actual.');
-            return;
-        }
-
-        if (fechaFin < fechaInicio) {
-            setMensajeError('La fecha final debe ser mayor o igual a la fecha de inicio.');
-            return;
-        }
-
-        if (preguntas.length === 0) {
-            setMensajeError('La encuesta debe incluir al menos una pregunta.');
-            return;
-        }
-
-        if (!token) {
-            setMensajeError('No se encontró un token válido.');
-            return;
-        }
-
         try {
             const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-            console.log('Datos enviados:', {
-                titulo,
-                descripcion,
-                fecha_inicio: fechaInicio,
-                fecha_fin: fechaFin,
-                preguntas,
-            });
+            // Ajustar fecha de inicio a medianoche local
+            const fechaInicioAjustada = new Date(fechaInicio);
+            fechaInicioAjustada.setMinutes(fechaInicioAjustada.getMinutes() + fechaInicioAjustada.getTimezoneOffset());
 
-            console.log('Token:', token);
+            // Ajustar fecha final al último segundo del día
+            const fechaFinAjustada = new Date(fechaFin);
+            fechaFinAjustada.setMinutes(fechaFinAjustada.getMinutes() + fechaFinAjustada.getTimezoneOffset());
+            fechaFinAjustada.setHours(23, 59, 59, 999); // Establece la hora a 23:59:59.999
 
-            // Crear encuesta
+            // Crear la encuesta
             const encuestaResponse = await axios.post(
                 `${apiUrl}/api/encuestas`,
                 {
                     titulo,
                     descripcion,
-                    fecha_inicio: fechaInicio,
-                    fecha_fin: fechaFin,
+                    fecha_inicio: fechaInicioAjustada.toISOString(),
+                    fecha_fin: fechaFinAjustada.toISOString(),
                 },
                 {
                     headers: {
@@ -108,7 +85,7 @@ const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
 
             const encuestaId = encuestaResponse.data._id;
 
-            // Crear preguntas
+            // Crear las preguntas
             for (const pregunta of preguntas) {
                 await axios.post(
                     `${apiUrl}/api/preguntas`,
@@ -135,15 +112,10 @@ const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
             onEncuestaCreada(encuestaResponse.data);
             cerrarFormulario();
         } catch (err) {
-            console.error('Error al guardar la encuesta:', err.response ? err.response.data : err.message);
-            setMensajeError(
-                err.response && err.response.data && err.response.data.message
-                    ? err.response.data.message
-                    : 'Error al crear la encuesta'
-            );
+            console.error('Error al guardar la encuesta:', err);
+            setMensajeError('Hubo un problema al guardar la encuesta.');
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit} className="formulario-encuesta mb-4">
