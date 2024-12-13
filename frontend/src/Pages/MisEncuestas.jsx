@@ -1,90 +1,142 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import NoContent from '../Components/NoContent/NoContent'
-import { useAuth } from '@/Context/AuthContext'
-import FormularioEncuesta from '../Components/FormularioEncuesta/FormularioEncuesta'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import NoContent from '../Components/NoContent/NoContent';
+import { useAuth } from '@/Context/AuthContext';
+import FormularioEncuesta from '../Components/FormularioEncuesta/FormularioEncuesta';
+import { useNavigate } from 'react-router-dom';
 
 const MisEncuestas = () => {
-    const { token } = useAuth()
-    const navigate = useNavigate()
-    const [encuestas, setEncuestas] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [showForm, setShowForm] = useState(false)
+    const { token } = useAuth();
+    const navigate = useNavigate();
+    const [encuestas, setEncuestas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showForm, setShowForm] = useState(false);
+    const [totalActivas, setTotalActivas] = useState(0);
+    const [totalPersonas, setTotalPersonas] = useState(0);
 
     useEffect(() => {
         if (!token) {
-            setLoading(false)
-            return
+            setLoading(false);
+            return;
         }
 
         const fetchEncuestas = async () => {
-            setLoading(true)
+            setLoading(true);
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+                // Obtener encuestas del usuario
                 const response = await axios.get(`${apiUrl}/api/encuestas/misencuestas`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                })
-                setEncuestas(response.data)
+                });
+
+                const encuestasData = response.data;
+
+                // Contar encuestas activas
+                const activas = encuestasData.filter(encuesta => isEncuestaDisponible(encuesta.fecha_inicio, encuesta.fecha_fin)).length;
+                setTotalActivas(activas);
+
+                // Obtener respuestas para cada encuesta y calcular total de personas
+                let totalRespuestasGlobal = 0;
+
+                const respuestasPromises = encuestasData.map(async encuesta => {
+                    try {
+                        const respuestasResponse = await axios.get(`${apiUrl}/api/respuestas/${encuesta._id}`);
+                        const respuestas = respuestasResponse.data.respuestas || {};
+
+                        // Calcular el mínimo de respuestas para una pregunta (equivale a número de personas)
+                        const personas = Math.min(...Object.values(respuestas).map(r => r.length));
+                        totalRespuestasGlobal += personas;
+
+                        return { ...encuesta, personas };
+                    } catch {
+                        // Si falla, asumimos 0 respuestas para esa encuesta
+                        return { ...encuesta, personas: 0 };
+                    }
+                });
+
+                const encuestasConPersonas = await Promise.all(respuestasPromises);
+
+                setEncuestas(encuestasConPersonas);
+                setTotalPersonas(totalRespuestasGlobal);
             } catch (err) {
-                console.error(err)
-                setError('Hubo un problema al cargar tus encuestas.')
+                console.error(err);
+                setError('Hubo un problema al cargar tus encuestas.');
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        fetchEncuestas()
-    }, [token])
+        fetchEncuestas();
+    }, [token]);
 
-    const handleEncuestaCreada = (nuevaEncuesta) => {
-        setEncuestas([...encuestas, nuevaEncuesta])
-    }
+    const handleEncuestaCreada = nuevaEncuesta => {
+        setEncuestas([...encuestas, nuevaEncuesta]);
+    };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async id => {
         if (!id) {
-            alert('ID de encuesta no válido.')
-            return
+            alert('ID de encuesta no válido.');
+            return;
         }
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
             await axios.delete(`${apiUrl}/api/encuestas/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            })
+            });
 
-            setEncuestas((prev) => prev.filter((encuesta) => encuesta._id !== id))
-            alert('Encuesta eliminada exitosamente.')
+            setEncuestas(prev => prev.filter(encuesta => encuesta._id !== id));
+            alert('Encuesta eliminada exitosamente.');
         } catch (err) {
-            console.error('Error al eliminar la encuesta:', err)
-            alert('No se pudo eliminar la encuesta.')
+            console.error('Error al eliminar la encuesta:', err);
+            alert('No se pudo eliminar la encuesta.');
         }
-    }
+    };
 
     const isEncuestaDisponible = (fechaInicio, fechaFin) => {
-        const fechaActual = new Date()
-        return fechaActual >= new Date(fechaInicio) && fechaActual <= new Date(fechaFin)
-    }
+        const fechaActual = new Date();
+        return fechaActual >= new Date(fechaInicio) && fechaActual <= new Date(fechaFin);
+    };
 
     if (!token) {
-        return <h2>Inicia sesión para ver tus encuestas.</h2>
+        return <h2>Inicia sesión para ver tus encuestas.</h2>;
     }
 
     if (loading) {
-        return <h2>Cargando encuestas...</h2>
+        return <h2>Cargando encuestas...</h2>;
     }
 
     if (error) {
-        return <h2>{error}</h2>
+        return <h2>{error}</h2>;
     }
 
     return (
         <div className="container">
+            <div className="row mb-4">
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-body text-center">
+                            <h5 className="card-title">Encuestas Activas</h5>
+                            <p className="card-text">{totalActivas}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-body text-center">
+                            <h5 className="card-title">Respuestas Totales</h5>
+                            <p className="card-text">{totalPersonas}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <button className="btn btn-primary mb-4" onClick={() => setShowForm(!showForm)}>
                 {showForm ? 'Cancelar' : 'Crear Encuesta'}
             </button>
@@ -105,12 +157,13 @@ const MisEncuestas = () => {
                             <th>Descripción</th>
                             <th>Fecha de Inicio</th>
                             <th>Fecha Final</th>
+                            <th>Respuestas</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {encuestas.map((encuesta) => {
-                            const disponible = isEncuestaDisponible(encuesta.fecha_inicio, encuesta.fecha_fin)
+                        {encuestas.map(encuesta => {
+                            const disponible = isEncuestaDisponible(encuesta.fecha_inicio, encuesta.fecha_fin);
                             return (
                                 <tr key={encuesta._id}>
                                     <td>
@@ -123,6 +176,7 @@ const MisEncuestas = () => {
                                     <td>{encuesta.descripcion}</td>
                                     <td>{new Date(encuesta.fecha_inicio).toLocaleDateString()}</td>
                                     <td>{new Date(encuesta.fecha_fin).toLocaleDateString()}</td>
+                                    <td>{encuesta.personas}</td>
                                     <td>
                                         <button
                                             className="btn btn-secondary me-2"
@@ -138,7 +192,7 @@ const MisEncuestas = () => {
                                         </button>
                                     </td>
                                 </tr>
-                            )
+                            );
                         })}
                     </tbody>
                 </table>
@@ -146,7 +200,7 @@ const MisEncuestas = () => {
                 <NoContent />
             )}
         </div>
-    )
-}
+    );
+};
 
-export default MisEncuestas
+export default MisEncuestas;
