@@ -1,125 +1,195 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '@/Context/AuthContext';
-import './formularioEncuesta.css';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useAuth } from '@/Context/AuthContext'
+import './formularioEncuesta.css'
 
-const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
-    const { token } = useAuth();
+const FormularioEncuesta = ({ encuesta, onEncuestaActualizada, cerrarFormulario, onEncuestaCreada }) => {
+    const { token } = useAuth()
 
-    const [titulo, setTitulo] = useState('');
-    const [descripcion, setDescripcion] = useState('');
-    const [fechaInicio, setFechaInicio] = useState('');
-    const [fechaFin, setFechaFin] = useState('');
-    const [preguntas, setPreguntas] = useState([]);
-    const [mensajeExito, setMensajeExito] = useState('');
-    const [mensajeError, setMensajeError] = useState('');
+    const [titulo, setTitulo] = useState(encuesta ? encuesta.titulo : '')
+    const [descripcion, setDescripcion] = useState(encuesta ? encuesta.descripcion : '')
+    const [fechaInicio, setFechaInicio] = useState(encuesta ? encuesta.fecha_inicio.split('T')[0] : '')
+    const [fechaFin, setFechaFin] = useState(encuesta ? encuesta.fecha_fin.split('T')[0] : '')
+    const [preguntas, setPreguntas] = useState([])
+    const [mensajeExito, setMensajeExito] = useState('')
+    const [mensajeError, setMensajeError] = useState('')
+
+    useEffect(() => {
+        if (encuesta && encuesta._id) {
+            const fetchPreguntas = async () => {
+                try {
+                    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+                    const response = await axios.get(`${apiUrl}/api/preguntas/${encuesta._id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    setPreguntas(response.data || [])
+                } catch (error) {
+                    console.error('Error al cargar las preguntas:', error)
+                }
+            }
+            fetchPreguntas()
+        }
+    }, [encuesta, token])
 
     const handleAgregarPregunta = () => {
         setPreguntas([
             ...preguntas,
             { texto: '', tipo: 'opcion_multiple', opciones: [] },
-        ]);
-    };
+        ])
+    }
 
     const handleEliminarPregunta = (index) => {
-        const nuevasPreguntas = preguntas.filter((_, i) => i !== index);
-        setPreguntas(nuevasPreguntas);
-    };
+        const nuevasPreguntas = preguntas.filter((_, i) => i !== index)
+        setPreguntas(nuevasPreguntas)
+    }
 
     const handlePreguntaChange = (index, field, value) => {
-        const nuevasPreguntas = [...preguntas];
-        nuevasPreguntas[index][field] = value;
-        setPreguntas(nuevasPreguntas);
-    };
+        const nuevasPreguntas = [...preguntas]
+        nuevasPreguntas[index][field] = value
+        setPreguntas(nuevasPreguntas)
+    }
 
     const handleAgregarOpcion = (index) => {
-        const nuevasPreguntas = [...preguntas];
-        nuevasPreguntas[index].opciones.push('');
-        setPreguntas(nuevasPreguntas);
-    };
+        const nuevasPreguntas = [...preguntas]
+        nuevasPreguntas[index].opciones.push('')
+        setPreguntas(nuevasPreguntas)
+    }
 
     const handleEliminarOpcion = (preguntaIndex, opcionIndex) => {
-        const nuevasPreguntas = [...preguntas];
-        nuevasPreguntas[preguntaIndex].opciones.splice(opcionIndex, 1);
-        setPreguntas(nuevasPreguntas);
-    };
+        const nuevasPreguntas = [...preguntas]
+        nuevasPreguntas[preguntaIndex].opciones.splice(opcionIndex, 1)
+        setPreguntas(nuevasPreguntas)
+    }
 
     const handleOpcionChange = (preguntaIndex, opcionIndex, value) => {
-        const nuevasPreguntas = [...preguntas];
-        nuevasPreguntas[preguntaIndex].opciones[opcionIndex] = value;
-        setPreguntas(nuevasPreguntas);
-    };
+        const nuevasPreguntas = [...preguntas]
+        nuevasPreguntas[preguntaIndex].opciones[opcionIndex] = value
+        setPreguntas(nuevasPreguntas)
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setMensajeExito('');
-        setMensajeError('');
+        e.preventDefault()
+        setMensajeExito('')
+        setMensajeError('')
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-            // Ajustar fecha de inicio a medianoche local
-            const fechaInicioAjustada = new Date(fechaInicio);
-            fechaInicioAjustada.setMinutes(fechaInicioAjustada.getMinutes() + fechaInicioAjustada.getTimezoneOffset());
 
-            // Ajustar fecha final al último segundo del día
-            const fechaFinAjustada = new Date(fechaFin);
-            fechaFinAjustada.setMinutes(fechaFinAjustada.getMinutes() + fechaFinAjustada.getTimezoneOffset());
-            fechaFinAjustada.setHours(23, 59, 59, 999); // Establece la hora a 23:59:59.999
+            const fechaInicioAjustada = new Date(fechaInicio)
+            fechaInicioAjustada.setMinutes(fechaInicioAjustada.getMinutes() + fechaInicioAjustada.getTimezoneOffset())
 
-            // Crear la encuesta
-            const encuestaResponse = await axios.post(
-                `${apiUrl}/api/encuestas`,
-                {
-                    titulo,
-                    descripcion,
-                    fecha_inicio: fechaInicioAjustada.toISOString(),
-                    fecha_fin: fechaFinAjustada.toISOString(),
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const fechaFinAjustada = new Date(fechaFin)
+            fechaFinAjustada.setMinutes(fechaFinAjustada.getMinutes() + fechaFinAjustada.getTimezoneOffset())
+            fechaFinAjustada.setHours(23, 59, 59, 999)
 
-            const encuestaId = encuestaResponse.data._id;
+            if (encuesta && encuesta._id) {
 
-            // Crear las preguntas
-            for (const pregunta of preguntas) {
-                await axios.post(
-                    `${apiUrl}/api/preguntas`,
+                await axios.put(
+                    `${apiUrl}/api/encuestas/${encuesta._id}`,
                     {
-                        encuesta_id: encuestaId,
-                        tipo: pregunta.tipo,
-                        texto: pregunta.texto,
-                        opciones: pregunta.opciones,
+                        titulo,
+                        descripcion,
+                        fecha_inicio: fechaInicioAjustada.toISOString(),
+                        fecha_fin: fechaFinAjustada.toISOString(),
                     },
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     }
-                );
+                )
+
+
+                for (const pregunta of preguntas) {
+                    if (pregunta._id) {
+
+                        await axios.put(
+                            `${apiUrl}/api/preguntas/${pregunta._id}`,
+                            {
+                                texto: pregunta.texto,
+                                tipo: pregunta.tipo,
+                                opciones: pregunta.opciones,
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        )
+                    } else {
+
+                        await axios.post(
+                            `${apiUrl}/api/preguntas`,
+                            {
+                                encuesta_id: encuesta._id,
+                                texto: pregunta.texto,
+                                tipo: pregunta.tipo,
+                                opciones: pregunta.opciones,
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        )
+                    }
+                }
+
+                setMensajeExito('Encuesta actualizada exitosamente.')
+            } else {
+
+                const encuestaResponse = await axios.post(
+                    `${apiUrl}/api/encuestas`,
+                    {
+                        titulo,
+                        descripcion,
+                        fecha_inicio: fechaInicioAjustada.toISOString(),
+                        fecha_fin: fechaFinAjustada.toISOString(),
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+
+                const encuestaId = encuestaResponse.data._id
+
+
+                for (const pregunta of preguntas) {
+                    await axios.post(
+                        `${apiUrl}/api/preguntas`,
+                        {
+                            encuesta_id: encuestaId,
+                            texto: pregunta.texto,
+                            tipo: pregunta.tipo,
+                            opciones: pregunta.opciones,
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    )
+                }
+
+                setMensajeExito('Encuesta creada exitosamente.')
             }
 
-            setMensajeExito('Encuesta guardada exitosamente.');
-            setTitulo('');
-            setDescripcion('');
-            setFechaInicio('');
-            setFechaFin('');
-            setPreguntas([]);
-            onEncuestaCreada(encuestaResponse.data);
-            cerrarFormulario();
+            cerrarFormulario()
         } catch (err) {
-            console.error('Error al guardar la encuesta:', err);
-            setMensajeError('Hubo un problema al guardar la encuesta.');
+            console.error('Error al guardar la encuesta:', err)
+            setMensajeError('Hubo un problema al guardar la encuesta.')
+            setMensajeExito('')
         }
-    };
+    }
 
     return (
         <form onSubmit={handleSubmit} className="formulario-encuesta mb-4">
-            <h2>Crear Nueva Encuesta</h2>
+            <h2>{encuesta ? 'Editar Encuesta' : 'Crear Nueva Encuesta'}</h2>
 
             {mensajeError && <div className="alert alert-danger">{mensajeError}</div>}
             {mensajeExito && <div className="alert alert-success">{mensajeExito}</div>}
@@ -237,10 +307,10 @@ const FormularioEncuesta = ({ onEncuestaCreada, cerrarFormulario }) => {
             </button>
 
             <button type="submit" className="btn btn-success w-100">
-                Guardar Encuesta
+                {encuesta ? 'Actualizar Encuesta' : 'Guardar Encuesta'}
             </button>
         </form>
-    );
-};
+    )
+}
 
-export default FormularioEncuesta;
+export default FormularioEncuesta
