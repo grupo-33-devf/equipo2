@@ -5,8 +5,6 @@ const QRCode = require('qrcode')
 const generarUrlCorta = async (req, res) => {
     const { encuestaId } = req.params
 
-    console.log(encuestaId);
-
     try {
         const encuesta = await Encuesta.findById(encuestaId)
 
