@@ -1,26 +1,26 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '@/styles/form.css';
-import logo from '@/assets/logo.png';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import '@/styles/form.css'
+import logo from '@/assets/logo.png'
 
 const Signup = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
         password: ''
-    });
+    })
 
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const [error, setError] = useState('')
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         setFormData({
             ...formData,
             [name]: value
-        });
-    };
+        })
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,8 +33,7 @@ const Signup = () => {
                 console.log('Usuario registrado exitosamente:', response.data);
                 alert('Registro exitoso. Ahora inicia sesión.');
 
-
-                navigate('/login');
+                navigate('/login'); // Redirige a login después de registrarse
             } else {
                 setError('Hubo un problema al registrarte.');
             }
@@ -47,16 +46,14 @@ const Signup = () => {
         }
     };
 
+    const handleGoogleAuth = () => {
+        window.location.href = 'http://localhost:8000/api/auth/google'
+    }
+
     return (
         <main className="form-signin w-100 m-auto">
             <form onSubmit={handleSubmit}>
-                <img
-                    className="mb-4"
-                    src={logo}
-                    alt=""
-                    width={90}
-                    height={80}
-                />
+                <img className="mb-4" src={logo} alt="" width={90} height={80} />
                 <h1 className="h3 mb-3 fw-normal">Regístrate</h1>
 
                 {error && <div className="alert alert-danger">{error}</div>}
@@ -100,12 +97,22 @@ const Signup = () => {
                     />
                     <label htmlFor="floatingPassword">Contraseña</label>
                 </div>
+
                 <button className="btn btn-primary w-100 py-2" type="submit">
                     Registrarse
                 </button>
+
+                <hr />
+                <button
+                    type="button"
+                    className="btn btn-danger w-100 py-2"
+                    onClick={handleGoogleAuth}
+                >
+                    <i className="bi bi-google"></i> Registrarse con Google
+                </button>
             </form>
         </main>
-    );
-};
+    )
+}
 
-export default Signup;
+export default Signup

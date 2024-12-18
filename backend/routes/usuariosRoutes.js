@@ -1,18 +1,22 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
 const {
     register,
     login,
     oauth,
-    logout
-} = require('../controllers/usuariosControllers')
+    logout,
+} = require('../controllers/usuariosControllers');
 
-router.post('/register', register) // Función para registrar usuario 
+router.post('/register', register);
+router.post('/login', login);
+router.get('/logout', logout);
 
-router.post('/login', login) // Función para inciar sesión
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get(
+    '/google/callback',
+    passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+    oauth
+);
 
-router.post('/oauth', oauth) // Función para inciar sesión con OAuth
-
-router.get('/logout', logout) // Función para cerrar sesion
-
-module.exports = router
+module.exports = router;
