@@ -1,0 +1,11 @@
+header .nav-item {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
+    margin-right: .5vw;
+}
+
+.dark-mode .nav-item {
+    border-color: white !important;
+}
