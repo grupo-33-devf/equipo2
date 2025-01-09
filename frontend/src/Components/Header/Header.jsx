@@ -45,7 +45,7 @@ const Header = () => {
                 <ul className="nav nav-pills">
                     <li className="nav-item">
                         <NavLink to="/" className="nav-link" aria-current="page">
-                            Home
+                            Inicio
                         </NavLink>
                     </li>
                     <li className="nav-item">
@@ -62,7 +62,7 @@ const Header = () => {
                             </li>
                             <li className="nav-item">
                                 <button className="btn btn-link nav-link" onClick={handleLogout}>
-                                    Log Out
+                                    Cerrar sesión
                                 </button>
                             </li>
                         </>
@@ -70,12 +70,12 @@ const Header = () => {
                         <>
                             <li className="nav-item">
                                 <NavLink to="/login" className="nav-link">
-                                    Log In
+                                    Identificate
                                 </NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/signup" className="nav-link">
-                                    Sign Up
+                                    Registrate
                                 </NavLink>
                             </li>
                         </>
