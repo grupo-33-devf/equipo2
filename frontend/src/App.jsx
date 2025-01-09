@@ -8,7 +8,7 @@ function App() {
   return (
     <AuthProvider>
       <Header />
-      <main>
+      <main className='ComponenteCentral'>
         <RoutesIndex />
       </main>
       <Footer />
