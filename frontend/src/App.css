@@ -167,3 +167,9 @@ body.dark-mode form {
 body.dark-mode .texto-creador {
   color: #ffffff;
 }
+
+.ComponenteCentral {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
