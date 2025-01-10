@@ -1,26 +1,27 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import '@/styles/form.css'
-import logo from '@/assets/logo.png'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import '@/styles/form.css';
+import logo from '@/assets/logo.png';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
         password: ''
-    })
+    });
 
-    const [error, setError] = useState('')
-    const navigate = useNavigate()
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value
-        })
-    }
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,11 +32,20 @@ const Signup = () => {
 
             if (response.status === 201) {
                 console.log('Usuario registrado exitosamente:', response.data);
-                alert('Registro exitoso. Ahora inicia sesión.');
 
-                navigate('/login'); // Redirige a login después de registrarse
+                // Muestra un mensaje de éxito
+                setMessage('Registro exitoso. Serás redirigido al login en 20 segundos.');
+
+                // Borra cualquier mensaje de error previo
+                setError('');
+
+                // Redirige a la página de login después de 20 segundos
+                setTimeout(() => {
+                    navigate('/login');
+                }, 20000);
             } else {
                 setError('Hubo un problema al registrarte.');
+                setMessage('');
             }
         } catch (error) {
             if (error.response && error.response.status === 409) {
@@ -43,12 +53,13 @@ const Signup = () => {
             } else {
                 setError('No se pudo conectar con el servidor.');
             }
+            setMessage('');
         }
     };
 
     const handleGoogleAuth = () => {
-        window.location.href = 'http://localhost:8000/api/auth/google'
-    }
+        window.location.href = 'http://localhost:8000/api/auth/google';
+    };
 
     return (
         <main className="form-signin w-100 m-auto">
@@ -56,6 +67,10 @@ const Signup = () => {
                 <img className="mb-4" src={logo} alt="" width={90} height={80} />
                 <h1 className="h3 mb-3 fw-normal">Regístrate</h1>
 
+                {/* Mensaje de éxito */}
+                {message && <div className="alert alert-success">{message}</div>}
+
+                {/* Mensaje de error */}
                 {error && <div className="alert alert-danger">{error}</div>}
 
                 <div className="form-floating">
@@ -112,7 +127,7 @@ const Signup = () => {
                 </button>
             </form>
         </main>
-    )
-}
+    );
+};
 
-export default Signup
+export default Signup;

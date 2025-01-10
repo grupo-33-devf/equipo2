@@ -25,6 +25,7 @@ const EncuestaVista = () => {
     const [shortUrl, setShortUrl] = useState('');
     const [qrCodeData, setQrCodeData] = useState('');
     const [esCreador, setEsCreador] = useState(false);
+    const [notification, setNotification] = useState({ type: '', message: '' });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,19 +33,15 @@ const EncuestaVista = () => {
                 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
                 const userId = localStorage.getItem('usuario_id');
 
-                // Obtener datos de la encuesta
                 const encuestaResponse = await axios.get(`${apiUrl}/api/encuestas/${id}`);
                 const encuestaData = encuestaResponse.data;
                 setEncuesta(encuestaData);
 
-                // Determinar si el usuario es el creador
                 setEsCreador(encuestaData.creador_id === userId);
 
-                // Obtener preguntas
                 const preguntasResponse = await axios.get(`${apiUrl}/api/preguntas/${id}`);
                 setPreguntas(preguntasResponse.data);
 
-                // Obtener estadísticas si el usuario es el creador
                 if (encuestaData.creador_id === userId) {
                     const respuestasResponse = await axios.get(`${apiUrl}/api/respuestas/${id}`);
                     setEstadisticas(respuestasResponse.data.respuestas || {});
@@ -67,9 +64,11 @@ const EncuestaVista = () => {
 
             const qrResponse = await axios.get(`${apiUrl}/api/urls/${id}/qr-code`);
             setQrCodeData(qrResponse.data.qrCodeData);
+
+            setNotification({ type: 'success', message: 'Enlace generado exitosamente.' });
         } catch (err) {
             console.error('Error al generar enlace para compartir:', err);
-            alert('Hubo un problema al generar el enlace y el código QR.');
+            setNotification({ type: 'error', message: 'Hubo un problema al generar el enlace.' });
         }
     };
 
@@ -82,23 +81,23 @@ const EncuestaVista = () => {
                 respuesta,
             }));
 
-            // Validar que todas las preguntas tengan respuesta
             if (respuestasArray.length !== preguntas.length) {
-                alert('Por favor responde todas las preguntas.');
+                setNotification({ type: 'error', message: 'Por favor responde todas las preguntas.' });
                 return;
             }
-
-            console.log('Enviando respuestas al servidor:', respuestasArray);
 
             for (const respuesta of respuestasArray) {
                 await axios.post(`${apiUrl}/api/respuestas`, respuesta);
             }
 
-            alert('Respuestas enviadas exitosamente.');
-            navigate('/encuestas');
+            setNotification({ type: 'success', message: 'Respuestas enviadas exitosamente.' });
+
+            setTimeout(() => {
+                navigate('/gracias');
+            }, 2000);
         } catch (err) {
             console.error('Error al enviar respuestas:', err.response?.data || err.message);
-            alert('Hubo un problema al enviar las respuestas.');
+            setNotification({ type: 'error', message: 'Hubo un problema al enviar las respuestas.' });
         }
     };
 
@@ -116,11 +115,16 @@ const EncuestaVista = () => {
         return { labels, data };
     };
 
-    if (error) return <div className="alert alert-danger">{error}</div>;
     if (!encuesta) return <div>Cargando encuesta...</div>;
 
     return (
         <div className="container mt-5">
+            {notification.message && (
+                <div className={`alert alert-${notification.type === 'success' ? 'success' : 'danger'}`}>
+                    {notification.message}
+                </div>
+            )}
+
             <h1>{encuesta.titulo}</h1>
             <p>{encuesta.descripcion}</p>
             <p>

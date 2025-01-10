@@ -1,0 +1,16 @@
+.gracias {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-check {
+    font-size: 4vh;
+    color: black;
+}
+
+body.dark-mode .icon-check {
+    color: white !important;
+}
