@@ -5,6 +5,7 @@ import Login from '../Pages/Login'
 import Signup from '../Pages/Signup'
 import MisEncuestas from '../Pages/MisEncuestas'
 import EncuestaVista from '../Pages/EncuestaVista'
+import Gracias from '../Pages/Gracias'
 
 const RoutesIndex = () => {
     return (
@@ -15,6 +16,7 @@ const RoutesIndex = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/misencuestas" element={<MisEncuestas />} />
+            <Route path="/gracias" element={<Gracias />} />
         </Routes>
     )
 }
